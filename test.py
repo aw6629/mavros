@@ -37,6 +37,12 @@ def arming_call():
     resp = drone_arm(1)
     rospy.sleep(2)
 
+def land__call():
+	print('\n----------land----------')
+	rospy.wait_for_service('/mavros/cmd/land')
+	drone_land = rospy.ServiceProxy('/mavros/cmd/land',CommandTOL)
+	resp = land()
+	
 def globalPosition_callback(data):
     global latitude
     global longitude
@@ -46,8 +52,8 @@ def globalPosition_callback(data):
     altitude = data.altitude
 
 def takeoff_call(lat,lon,alt):
-    print('\n----------takeoff_call----------')
-    takeoff = rospy.ServiceProxy('/mavros/cmd/takeoff',CommandTOL)
+    print('\n----------takeoff----------')
+    takeoff = rospy.ServiceProxy('/mavros/cmd/takeoffcur',CommandTOL)
     resp = takeoff(0,0,lat,lon,alt)
     rospy.sleep(5)
     return
@@ -72,6 +78,7 @@ def main():
     takeoff_call(-1,-1,5)
     takeoff_call(-1,1,4)
     takeoff_call(0,0,0)
+	land_call()
     # waypoints = [Waypoint(frame = 3, command = 16,is_current = True,autocontinue = True,param1 = 5,x_lat = -1,y_long = 1,z_alt = 3),
     #              Waypoint(frame =3 , command = 16,is_current = True,autocontinue = True,param1 = 5,x_lat = -2,y_long = 2,z_alt = 4),
     #              Waypoint(frame= 3 , command = 16,is_current = True,autocontinue = True,param1 = 5,x_lat = 0 ,y_long = 0 ,z_alt = 0)
